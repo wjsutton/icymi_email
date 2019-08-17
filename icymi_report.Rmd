@@ -1,0 +1,37 @@
+---
+#title: "icymi_email"
+output: html_document
+
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+library(formattable)
+
+```
+
+
+#### In Case You Missed It, `r Sys.Date()`
+```{r output, include=FALSE}
+twitter_app_name <- Sys.getenv("TWITTER_APP_NAME")
+
+df <- read.csv("timeline_tweets.csv",stringsAsFactors = F)
+df <- df[df$created_at > Sys.Date()-7,]
+df <- df[df$screen_name != twitter_app_name,]
+grouped_urls <- df[,5:6] %>% group_by(urls_expanded_url) %>% summarise(popularity = sum(popularity)) %>% arrange(desc(popularity))
+
+lookup <- data.frame(urls_expanded_url=df$urls_expanded_url, description=paste0(df$screen_name,": ",df$text),stringsAsFactors = F)
+lookup <- unique(lookup)
+lookup <- unique(lookup %>% 
+                group_by(urls_expanded_url) %>% 
+                mutate(description = paste0(description, collapse = "")))
+output <- grouped_urls %>% left_join(lookup, by = c("urls_expanded_url" = "urls_expanded_url"))
+output <- output[,c(1,3,2)] %>% arrange(desc(popularity))
+table <- kable(output,"html") %>%  kable_styling(full_width = F, font_size = 9) %>% column_spec(column = 1, width = "2cm", width_max = "2cm")
+#kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+```
+`r table`
