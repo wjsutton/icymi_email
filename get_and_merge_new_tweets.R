@@ -17,6 +17,7 @@ source("function_timeline_tweets.R")
 
 # Log in to various apps
 source("login_twitter.R")
+twitter_token <- readRDS("twitter_token.RDS")
 
 # Get last run of data from s3 bucket
 if(file.exists("timeline_tweets.csv")){
@@ -25,7 +26,7 @@ if(file.exists("timeline_tweets.csv")){
 save_object("timeline_tweets.csv", bucket = "bucket-number-01")
 
 ## get new tweets and merge with old tweets
-new_tweets <- timeline_tweets(500)
+new_tweets <- timeline_tweets(500, twitter_token)
 old_tweets <- read.csv("timeline_tweets.csv",stringsAsFactors = F)
 old_tweets <- old_tweets[!old_tweets$status_id %in% new_tweets$status_id,]
 new_tweets <- rbind(new_tweets,old_tweets)
