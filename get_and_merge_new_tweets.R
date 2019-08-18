@@ -1,6 +1,6 @@
 setwd("icymi_email")
 # Load environment
-if(file.exists(".Renviron"){
+if(file.exists(".Renviron")){
 source(".Renviron")
 }
 
