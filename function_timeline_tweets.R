@@ -1,6 +1,6 @@
 # Function to extend original get_my_timeline for unlimited requests
 timeline_tweets <- function(a){
-  timeline <- rtweet::get_my_timeline(n=a)
+  timeline <- rtweet::get_my_timeline(n=a,token = twitter_token)
   
   just_urls <- timeline[is.na(timeline$urls_expanded_url)==FALSE,]
   # Split status updates and resources
@@ -8,7 +8,7 @@ timeline_tweets <- function(a){
   resources <- just_urls[grepl('status',just_urls$urls_expanded_url)==FALSE,]
   if(nrow(status_updates)>0){
     status_tweets <- substr(stringr::str_extract(status_updates$urls_expanded_url,'status/[[:digit:]]+'),8,nchar(str_extract(status_updates$urls_expanded_url,'status/[[:digit:]]+')))
-    status_urls <- rtweet::lookup_tweets(status_tweets, parse = TRUE, token = NULL) 
+    status_urls <- rtweet::lookup_tweets(status_tweets, parse = TRUE, token = twitter_token) 
     status_urls <- status_urls[is.na(status_urls$urls_expanded_url)==FALSE,]
     all_resources <- rbind(resources,status_urls)
   }
