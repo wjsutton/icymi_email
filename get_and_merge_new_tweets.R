@@ -20,7 +20,7 @@ if(file.exists("timeline_tweets.csv")){
 }
 s3_bucket <- Sys.getenv("AWS_S3_BUCKET_NAME")
 
-if(aws.s3::head_object("timeline_tweets.csv", bucket = s3_bucket)==TRUE){
+if(aws.s3::head_object("timeline_tweets.csv", bucket = s3_bucket)[1]==TRUE){
 	save_object("timeline_tweets.csv", bucket = s3_bucket)
 }
 
@@ -37,7 +37,7 @@ new_tweets <- new_tweets[as.Date(new_tweets$created_at) > Sys.Date() - days_afte
 
 ## write file to S3
 # Delete old file
-if(aws.s3::head_object("timeline_tweets.csv", bucket = s3_bucket)==TRUE){
+if(aws.s3::head_object("timeline_tweets.csv", bucket = s3_bucket)[1]==TRUE){
 	aws.s3::delete_object("timeline_tweets.csv", bucket = s3_bucket)
 }
 # write new file to bucket
