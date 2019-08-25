@@ -31,13 +31,16 @@ new_tweets <- timeline_tweets(500)
 if(file.exists("timeline_tweets.csv")){
 	old_tweets <- read.csv("timeline_tweets.csv",stringsAsFactors = F)
 	old_tweets <- old_tweets[!old_tweets$status_id %in% new_tweets$status_id,]
-	new_tweets <- rbind(new_tweets,old_tweets)
+	if(nrow(old_tweets)>0){
+		new_tweets <- rbind(new_tweets,old_tweets)
+	}
+	file.remove("timeline_tweets.csv")
 }
 new_tweets <- unique(new_tweets)
 
 # remove tweets from previous weeks
-days_after_monday <- 7 - as.numeric(strftime(Sys.Date(),'%u'))
-new_tweets <- new_tweets[as.Date(new_tweets$created_at) > Sys.Date() - days_after_monday,]
+monday <- as.Date(format(as.Date(Sys.Date(), "%m/%d/%Y"),"%Y-%W-1"),"%Y-%W-%u")
+new_tweets <- new_tweets[as.Date(new_tweets$created_at) >= monday,]
 
 ## write file to S3
 # Delete old file
