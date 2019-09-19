@@ -12,6 +12,7 @@ library(rmarkdown)
 
 # Load funcions
 source("function_timeline_tweets.R")
+source("function_render_tweet_html.R")
 
 # Log in to various apps
 source("login_twitter.R")
@@ -56,5 +57,5 @@ aws.s3::put_object(tmp, object = "timeline_tweets.csv", bucket = s3_bucket)
 # at the end of the week produce report and send it to an s3 bucket
 if(format(Sys.Date(), "%A")=='Sunday'){
 	write.csv(new_tweets,"timeline_tweets.csv",row.names = F)
-	source("render_html_report.R")
+	source("render_html_report_v2.R")
 }
