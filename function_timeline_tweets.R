@@ -16,10 +16,10 @@ timeline_tweets <- function(a){
     all_resources <- resources
   }
   
-  df <- all_resources[,c('status_id','created_at','screen_name','text','urls_expanded_url','favorite_count','retweet_count')]
+  df <- all_resources[,c('status_id','created_at','screen_name','name','text','urls_expanded_url','favorite_count','retweet_count','profile_image_url','profile_url')]
   df <- unnest(df)
   df$popularity <- df$favorite_count + df$retweet_count
-  df <- df[,c('status_id','created_at','screen_name','text','urls_expanded_url','popularity')]
+  df <- df[,c('status_id','created_at','screen_name','name','text','urls_expanded_url','favorite_count','retweet_count','profile_image_url','profile_url','popularity')]
   df <- df %>% arrange(desc(popularity))
   
   return(df)
